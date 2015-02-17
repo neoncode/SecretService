@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/cummingsi1993/SecretService/Models"
-	"github.com/cummingsi1993/SecretService/encryption"
-	"github.com/cummingsi1993/go-data_access"
+	"github.com/neoncode/SecretService/Models"
+	"github.com/neoncode/SecretService/encryption"
+	"github.com/neoncode/NoSQLDataAccess"
 	//"github.com/cummingsi1993@gmail.com/SecretService/Controllers"
 	//"encoding/json"
 	"encoding/base64"
