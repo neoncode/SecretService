@@ -1,4 +1,4 @@
-package models
+package Models
 
 type SecretThing struct {
 	Key string

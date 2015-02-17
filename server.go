@@ -4,8 +4,6 @@ import (
 	"github.com/neoncode/SecretService/Models"
 	"github.com/neoncode/SecretService/encryption"
 	"github.com/neoncode/NoSQLDataAccess"
-	//"github.com/cummingsi1993@gmail.com/SecretService/Controllers"
-	//"encoding/json"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -14,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"os"
 )
 
 func main() {
@@ -24,8 +23,9 @@ func main() {
 	router.HandleFunc("/SecretThing/{key}", func(w http.ResponseWriter, r *http.Request) {
 		DecorateWithLog(SecretThingEndpoint)(w, r)
 	})
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 
-	log.Fatal(http.ListenAndServe(":3000", router))
+	log.Fatal(http.ListenAndServe(os.Getenv("PORT"), router))
 }
 
 func SecretThingEndpoint(w http.ResponseWriter, r *http.Request) error {
