@@ -1,0 +1,34 @@
+{
+	"ImportPath": "github.com/neoncode/secretservice",
+	"GoVersion": "go1.4.1",
+	"Deps": [
+		{
+			"ImportPath": "github.com/couchbase/gomemcached",
+			"Rev": "ab2e4449c34a22e6511abd78c074b4a8c6cc8b33"
+		},
+		{
+			"ImportPath": "github.com/couchbaselabs/go-couchbase",
+			"Rev": "6fd10eb23d16e726c90ae9a2330ef55c474a079c"
+		},
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "215affda49addc4c8ef7e2534915df2c8c35c6cd"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Rev": "8a875a034c69b940914d83ea03d3f1299b4d094b"
+		},
+		{
+			"ImportPath": "github.com/neoncode/NoSQLDataAccess",
+			"Rev": "28ba643f50d1f851173febb227c315bd4dbf4369"
+		},
+		{
+			"ImportPath": "github.com/neoncode/SecretService/Models",
+			"Rev": "11d6113e77837cb699303893cb42a85fe700fc31"
+		},
+		{
+			"ImportPath": "github.com/neoncode/SecretService/encryption",
+			"Rev": "11d6113e77837cb699303893cb42a85fe700fc31"
+		}
+	]
+}
