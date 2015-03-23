@@ -1,23 +1,27 @@
 package main
 
 import (
-	"github.com/neoncode/SecretService/Models"
-	"github.com/neoncode/SecretService/encryption"
-	"github.com/neoncode/NoSQLDataAccess"
 	"encoding/base64"
 	"errors"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/neoncode/NoSQLDataAccess"
+	"github.com/neoncode/SecretService/Models"
+	"github.com/neoncode/SecretService/encryption"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
 	"os"
+	"strings"
 )
 
 func main() {
 	//Set up configuration
-	url := "http://localhost:8091/"
+	url := os.Getenv("DBPATH")
+	if url == "" {
+		url = "http://localhost:8091/"
+	}
+
 	_ = url
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/SecretThing/{key}", func(w http.ResponseWriter, r *http.Request) {
