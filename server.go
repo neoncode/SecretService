@@ -20,6 +20,7 @@ func main() {
 	url := os.Getenv("DBPATH")
 	if url == "" {
 		url = "http://localhost:8091/"
+
 	}
 
 	_ = url
