@@ -34,7 +34,7 @@ func main() {
 // func SecretThingEndpoint(w http.ResponseWriter, r *http.Request) error {
 // 	fmt.Println("Secret thing endpoint was hit.")
 // 	var err error
-// 	switch r.Method {
+// 	switch r.Method { 
 // 	case "POST":
 // 		err = PutOrPostSecretThing(w, r)
 // 	case "PUT":
