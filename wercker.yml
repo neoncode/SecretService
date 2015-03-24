@@ -12,8 +12,8 @@ build:
         code: |
           cd $WERCKER_SOURCE_DIR
           go version
-          go get github.com/gorilla/mux
-          go get github.com/neoncode/nosqldataaccess
+    # go get github.com/gorilla/mux
+    # go get github.com/neoncode/nosqldataaccess
           
     # go get -t ./...
 
