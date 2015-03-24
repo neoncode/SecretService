@@ -21,14 +21,6 @@
 		{
 			"ImportPath": "github.com/neoncode/NoSQLDataAccess",
 			"Rev": "28ba643f50d1f851173febb227c315bd4dbf4369"
-		},
-		{
-			"ImportPath": "github.com/neoncode/SecretService/Models",
-			"Rev": "11d6113e77837cb699303893cb42a85fe700fc31"
-		},
-		{
-			"ImportPath": "github.com/neoncode/SecretService/encryption",
-			"Rev": "11d6113e77837cb699303893cb42a85fe700fc31"
 		}
 	]
 }
