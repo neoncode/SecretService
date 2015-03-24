@@ -15,13 +15,13 @@ import (
 
 func main() {
 	//Set up configuration
-	url := os.Getenv("DBPATH")
-	if url == "" {
-		url = "http://localhost:8091/"
+	// url := os.Getenv("DBPATH")
+	// if url == "" {
+	// 	url = "http://localhost:8091/"
 
-	}
+	// }
 
-	_ = url
+	// _ = url
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/SecretThing/{key}", func(w http.ResponseWriter, r *http.Request) {
 		DecorateWithLog(SecretThingEndpoint)(w, r)
