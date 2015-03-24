@@ -48,4 +48,4 @@ deploy:
     - script:
         name: Push to dokku
         code: |
-          git push -f dokku master
+          git push dokku master
