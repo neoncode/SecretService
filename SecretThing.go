@@ -1,8 +1,6 @@
-package Models
+package main
 
 type SecretThing struct {
-	Key string
+	Key   string
 	Value []byte
 }
-
-

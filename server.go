@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/neoncode/NoSQLDataAccess"
-	"github.com/neoncode/SecretService/Models"
-	"github.com/neoncode/SecretService/encryption"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -61,14 +59,14 @@ func GetAuthenticationString(w http.ResponseWriter, r *http.Request) ([]byte, er
 	return payload, err
 }
 
-func GetSecretThingFromRequest(r *http.Request) (*Models.SecretThing, error) {
+func GetSecretThingFromRequest(r *http.Request) (*SecretThing, error) {
 	vars := mux.Vars(r)
 	key := vars["key"]
 	bytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return nil, err
 	}
-	secretThing := Models.SecretThing{key, bytes}
+	secretThing := SecretThing{key, bytes}
 	return &secretThing, err
 }
 
@@ -85,7 +83,7 @@ func PutOrPostSecretThing(w http.ResponseWriter, r *http.Request) (err error) {
 		return
 	}
 
-	encrypted, err := encryption.Encrypt(encryption.Hash(authString), thing.Value)
+	encrypted, err := Encrypt(Hash(authString), thing.Value)
 	if err != nil {
 		return
 	}
@@ -100,7 +98,7 @@ func PutOrPostSecretThing(w http.ResponseWriter, r *http.Request) (err error) {
 
 func GetSecretThing(w http.ResponseWriter, r *http.Request) (err error) {
 	url := "http://localhost:8091/"
-	thing := new(Models.SecretThing)
+	thing := new(SecretThing)
 	vars := mux.Vars(r)
 	key := vars["key"]
 	couchbase := DataAccess.GetCouchbaseDAL(url, "default", "SecretThing")
@@ -115,7 +113,7 @@ func GetSecretThing(w http.ResponseWriter, r *http.Request) (err error) {
 		return
 	}
 
-	decrypted, err := encryption.Decrypt(encryption.Hash(authString), thing.Value)
+	decrypted, err := Decrypt(Hash(authString), thing.Value)
 	if err != nil {
 		return
 	}
