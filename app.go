@@ -55,9 +55,11 @@ func GetThing(thingKey string)(SecretThing, error) {
 
 func PutThing(thing *SecretThing) error {
 	uri := GetDbString()
+	fmt.Println(uri)
+	fmt.Println(GetDbName())
 	sess, _ := mgo.Dial(uri)
 	defer sess.Close()
-	//sess.SetSafe(&mgo.Safe{})
+	sess.SetSafe(&mgo.Safe{})
 	collection := sess.DB(GetDbName()).C("SecretService")
 
 	collection.Insert(thing)
