@@ -34,6 +34,7 @@ func GetThing(thingKey string)(SecretThing, error) {
             os.Exit(1)
     }
 	dbName := GetDbName()
+	fmt.Println(uri)
     sess, err := mgo.Dial(uri)
     if err != nil {
             fmt.Printf("Can't connect to mongo, go error %v\n", err)
