@@ -9,9 +9,9 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"fmt"
 	"github.com/gorilla/mux"
-	 "log"
-	 "net/http"
-	 "os"
+	"log"
+	"net/http"
+	"os"
 )
 var url string
 
@@ -33,7 +33,7 @@ func GetThing(thingKey string)(SecretThing, error) {
             fmt.Println("no connection string provided")
             os.Exit(1)
     }
-
+	dbName := GetDbName()
     sess, err := mgo.Dial(uri)
     if err != nil {
             fmt.Printf("Can't connect to mongo, go error %v\n", err)
@@ -43,7 +43,7 @@ func GetThing(thingKey string)(SecretThing, error) {
 
     //sess.SetSafe(&mgo.Safe{})
     fmt.Println("About to hit db. " + thingKey)
-    collection := sess.DB(GetDbName()).C("SecretService")
+    collection := sess.DB(dbName).C("SecretService")
 
     result := SecretThing{}
 
@@ -55,12 +55,13 @@ func GetThing(thingKey string)(SecretThing, error) {
 
 func PutThing(thing *SecretThing) error {
 	uri := GetDbString()
+	dbName := GetDbName()
 	fmt.Println(uri)
 	fmt.Println(GetDbName())
 	sess, _ := mgo.Dial(uri)
 	defer sess.Close()
-	sess.SetSafe(&mgo.Safe{})
-	collection := sess.DB(GetDbName()).C("SecretService")
+	//sess.SetSafe(&mgo.Safe{})
+	collection := sess.DB(dbName).C("SecretService")
 
 	collection.Insert(thing)
 	return nil
