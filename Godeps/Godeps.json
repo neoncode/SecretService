@@ -3,14 +3,6 @@
 	"GoVersion": "go1.4.1",
 	"Deps": [
 		{
-			"ImportPath": "github.com/couchbase/gomemcached",
-			"Rev": "ab2e4449c34a22e6511abd78c074b4a8c6cc8b33"
-		},
-		{
-			"ImportPath": "github.com/couchbaselabs/go-couchbase",
-			"Rev": "6fd10eb23d16e726c90ae9a2330ef55c474a079c"
-		},
-		{
 			"ImportPath": "github.com/gorilla/context",
 			"Rev": "215affda49addc4c8ef7e2534915df2c8c35c6cd"
 		},
@@ -19,8 +11,9 @@
 			"Rev": "8a875a034c69b940914d83ea03d3f1299b4d094b"
 		},
 		{
-			"ImportPath": "github.com/neoncode/NoSQLDataAccess",
-			"Rev": "28ba643f50d1f851173febb227c315bd4dbf4369"
+			"ImportPath": "gopkg.in/mgo.v2",
+			"Comment": "r2015.01.24",
+			"Rev": "c6a7dce14133ccac2dcac3793f1d6e2ef048503a"
 		}
 	]
 }

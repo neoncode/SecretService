@@ -1,35 +1,67 @@
 package main
 
 import (
-	// "encoding/base64"
-	// "errors"
-	// "io/ioutil"
-	// "strings"
+	"encoding/base64"
+	"errors"
+	"io/ioutil"
+	"strings"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/neoncode/NoSQLDataAccess"
 	 "log"
 	 "net/http"
 	 "os"
 )
 var url string
-func main() {
-	//Set up configuration
-	url = "woo"
-	// url = os.Getenv("DBPATH")
-	// if url == "" {
-	// 	url = "http://localhost:8091/"
-	// }
 
-	// _ = url
+
+const dbString = "localhost:27017"
+func main() {
 	router := mux.NewRouter().StrictSlash(true)
-	// router.HandleFunc("/SecretThing/{key}", func(w http.ResponseWriter, r *http.Request) {
-	// 	DecorateWithLog(SecretThingEndpoint)(w, r)
-	// })
-	//thing = SecretThing
+	router.HandleFunc("/SecretThing/{key}", func(w http.ResponseWriter, r *http.Request) {
+		DecorateWithLog(SecretThingEndpoint)(w, r)
+	})
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 	fmt.Println(os.Getenv("PORT"))
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), router))
+}
+
+func GetThing(thingKey string)(SecretThing, error) {
+	uri := GetDbString()
+    if uri == "" {
+            fmt.Println("no connection string provided")
+            os.Exit(1)
+    }
+
+    sess, err := mgo.Dial(uri)
+    if err != nil {
+            fmt.Printf("Can't connect to mongo, go error %v\n", err)
+            os.Exit(1)
+    }
+    defer sess.Close()
+
+    sess.SetSafe(&mgo.Safe{})
+    fmt.Println("About to hit db. " + thingKey)
+    collection := sess.DB("secretservice").C("SecretService")
+
+    result := SecretThing{}
+
+    collection.Find(bson.M{"key": thingKey}).One(&result)
+    fmt.Println(result)
+    return result,nil
+
+}
+
+func PutThing(thing *SecretThing) error {
+	uri := GetDbString()
+	sess, _ := mgo.Dial(uri)
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+	collection := sess.DB("secretservice").C("SecretService")
+
+	collection.Insert(thing)
+	return nil
 }
 
 func SecretThingEndpoint(w http.ResponseWriter, r *http.Request) error {
@@ -49,89 +81,88 @@ func SecretThingEndpoint(w http.ResponseWriter, r *http.Request) error {
 }
 
 func GetAuthenticationString(w http.ResponseWriter, r *http.Request) ([]byte, error) {
-	// auth := strings.SplitN(r.Header["Authorization"][0], " ", 2)
-	// fmt.Println("made it past getting the header")
-	// if len(auth) != 2 || auth[0] != "Basic" {
-	// 	http.Error(w, "bad syntax", http.StatusBadRequest) //This is a good strategy for handling errors
-	// 	return nil, errors.New("Bad Syntax")
-	// }
+	auth := strings.SplitN(r.Header["Authorization"][0], " ", 2)
+	fmt.Println("made it past getting the header")
+	if len(auth) != 2 || auth[0] != "Basic" {
+		http.Error(w, "bad syntax", http.StatusBadRequest) //This is a good strategy for handling errors
+		return nil, errors.New("Bad Syntax")
+	}
 
-	// payload, err := base64.StdEncoding.DecodeString(auth[1])
-	// return payload, err
-	return nil,nil
+	payload, err := base64.StdEncoding.DecodeString(auth[1])
+	return payload, err
 }
 
-// func GetSecretThingFromRequest(r *http.Request) (*SecretThing, error) {
-// 	// vars := mux.Vars(r)
-// 	// key := vars["key"]
-// 	// bytes, err := ioutil.ReadAll(r.Body)
-// 	// if err != nil {
-// 	// 	return nil, err
-// 	// }
-// 	// secretThing := SecretThing{key, bytes}
-// 	// return &secretThing, err
-// 	return nil, nil
-// }
+func GetSecretThingFromRequest(r *http.Request) (*SecretThing, error) {
+	vars := mux.Vars(r)
+	key := vars["key"]
+	bytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return nil, err
+	}
+	secretThing := SecretThing{key, bytes}
+	return &secretThing, err
+	
+}
 
 func PutOrPostSecretThing(w http.ResponseWriter, r *http.Request) (err error) {
-	// thing, err := GetSecretThingFromRequest(r)
-	// if err != nil {
-	// 	return
-	// }
+	thing, err := GetSecretThingFromRequest(r)
+	if err != nil {
+		return
+	}
 
 	// url := "http://localhost:8091/"
 
-	// authString, err := GetAuthenticationString(w, r)
-	// if err != nil {
-	// 	return
-	// }
+	authString, err := GetAuthenticationString(w, r)
+	if err != nil {
+		return
+	}
 
-	// encrypted, err := Encrypt(Hash(authString), thing.Value)
-	// if err != nil {
-	// 	return
-	// }
+	encrypted, err := Encrypt(Hash(authString), thing.Value)
+	if err != nil {
+		return
+	}
 
-	// thing.Value = encrypted
+	thing.Value = encrypted
 
-	// couchbase := DataAccess.GetCouchbaseDAL(url, "default", "SecretThing")
-
-	// err = couchbase.Set(thing.Key, thing)
+	PutThing(thing)
 	return
 }
 
 func GetSecretThing(w http.ResponseWriter, r *http.Request) (err error) {
-	// url := "http://localhost:8091/"
-	// thing := new(SecretThing)
-	// vars := mux.Vars(r)
-	// key := vars["key"]
-	// couchbase := DataAccess.GetCouchbaseDAL(url, "default", "SecretThing")
-	// err = couchbase.Get(key, thing)
-	// fmt.Println(err)
-	// if err != nil {
-	// 	return
-	// }
+	vars := mux.Vars(r)
+	key := vars["key"]
+	thing, err := GetThing(key)//
+	fmt.Println(err)
+	if err != nil || thing.Value == nil {
+		http.Error(w, "Request returned no results.", 404)
+		return
+	}
 
-	// authString, err := GetAuthenticationString(w, r)
-	// if err != nil {
-	// 	return
-	// }
+	authString, err := GetAuthenticationString(w, r)
+	if err != nil {
+		return
+	}
 
-	// decrypted, err := Decrypt(Hash(authString), thing.Value)
-	// if err != nil {
-	// 	return
-	// }
+	decrypted, err := Decrypt(Hash(authString), thing.Value)
+	if err != nil {
+		return
+	}
 
-	// w.Write(decrypted)
-	// return
+	w.Write(decrypted)
 	return
 }
 
 func DeleteSecretThing(w http.ResponseWriter, r *http.Request) (err error) {
-	url := "http://localhost:8091/"
 	vars := mux.Vars(r)
 	key := vars["key"]
-	couchbase := DataAccess.GetCouchbaseDAL(url, "default", "SecretThing")
-	err = couchbase.Remove(key)
+
+	uri := GetDbString()
+	sess, _ := mgo.Dial(uri)
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+	collection := sess.DB("secretservice").C("SecretService")
+
+	collection.Remove(bson.M{"key": key})
 	return
 }
 
@@ -146,30 +177,12 @@ func DecorateWithLog(fn appHandler) func(http.ResponseWriter, *http.Request) {
 }
 
 
-// package main
-// import (
-//   // "fmt"
-//   "net/http"
-//   "github.com/gorilla/mux"
-//   "os"
-//   "log"
-// )
-
-// // func handler ...
-
-// func main() {
-// 	router := mux.NewRouter().StrictSlash(true)
-
-// 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
-
-// 	log.Fatal(http.ListenAndServe(":" + os.Getenv("PORT"), router))
-// }
-
-// func handler(w http.ResponseWriter, r *http.Request) {
-//   fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
-// }
-
-// func main() {
-//   http.HandleFunc("/", handler)
-//   http.ListenAndServe(":"+os.Getenv("PORT"), nil)
-// }
+func GetDbString() string{
+	uri := os.Getenv("MONGO_URL")
+    if uri == "" {
+            fmt.Println("no connection string provided")
+            return dbString
+    }else{
+    	return uri
+    }
+}
