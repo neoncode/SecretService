@@ -43,7 +43,7 @@ func GetThing(thingKey string)(SecretThing, error) {
 
     sess.SetSafe(&mgo.Safe{})
     fmt.Println("About to hit db. " + thingKey)
-    collection := sess.DB("secretservice").C("SecretService")
+    collection := sess.DB(GetDbName()).C("SecretService")
 
     result := SecretThing{}
 
@@ -58,7 +58,7 @@ func PutThing(thing *SecretThing) error {
 	sess, _ := mgo.Dial(uri)
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
-	collection := sess.DB("secretservice").C("SecretService")
+	collection := sess.DB(GetDbName()).C("SecretService")
 
 	collection.Insert(thing)
 	return nil
@@ -185,4 +185,14 @@ func GetDbString() string{
     }else{
     	return uri
     }
+}
+
+func GetDbName() string{
+	name := os.Getenv("MONGODB_DATABASE")
+	if name == ""{
+		fmt.Println("no db name configured")
+		return "secretservice"
+	}else{
+		return name
+	}
 }
