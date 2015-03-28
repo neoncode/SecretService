@@ -1,1 +1,1 @@
-web: SecretService
+web: secretservice
