@@ -161,10 +161,11 @@ func DeleteSecretThing(w http.ResponseWriter, r *http.Request) (err error) {
 	key := vars["key"]
 
 	uri := GetDbString()
+	databaseName := GetDbName()
 	sess, _ := mgo.Dial(uri)
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
-	collection := sess.DB("secretservice").C("SecretService")
+	collection := sess.DB(databaseName).C("SecretService")
 
 	collection.Remove(bson.M{"key": key})
 	return
