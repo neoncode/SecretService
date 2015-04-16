@@ -1,0 +1,13 @@
+Server	|	UserName	|	Passphrase					|	Domain					|
+data1	|	JeffOrIsaac	| KLGHS*(G(&^BJBKG&*njkfhdslg	|	dataStore1.cloudapp.net	|
+data3	|	JeffOrIsaac	| IOhjkh*(156sjkh;shgahui**gm	|	dataStore3.cloudapp.net	|
+
+
+
+10.0.0.4 Couchbase Admin Console - Administrator: HJKHG8&*&*hgdfshzh
+
+10.0.0.5 Couchbase Admin Console - Administrator: JKGLHerfdhJH**(*Hj
+
+
+10.0.0.4 data1.cloudapp.net
+10.0.0.5 data3.cloudapp.net
